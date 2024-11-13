@@ -12,7 +12,12 @@ const CreateHabitDisplay = () => {
   
   return (
     <div>
-      <button onClick={openPopUp}>Create New Habit</button>
+      <button 
+      onClick={openPopUp}
+      className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+      >
+        Create New Habit
+      </button>
       {visibility && (
         <HabitPopUpContainer closePopUp={closePopUp} />
       )}
