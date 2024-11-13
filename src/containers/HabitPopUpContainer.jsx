@@ -27,14 +27,23 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   const [energyValue, setEnergyValue] = useState(0);
   const [danceabilityValue, setDanceabilityValue] = useState(0);
   const [valenceValue, setValenceValue] = useState(0);
+  const [recommendations, setRecommendations] = useState([]);
+
+  const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
+  const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}`;
 
   const openInnerPopUp = () => setInnerVisibility(true);
   const closeInnerPopUp = () => setInnerVisibility(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await sendHabitPreferenceData();
+    await makeRequest(createHabitsUrl, 'POST');
     closeInnerPopUp();
+    const response = await makeRequest(fetchRecommendationsUrl, 'GET');
+	if (response) {
+		setRecommendations(response)
+		console.log(recommendations);
+	} 
   };
 
   const handleInputChange = (event) => {
@@ -74,7 +83,7 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
     setValenceValue(event.target.value);
   };
 
-  const sendHabitPreferenceData = async () => {
+  const makeRequest = async (url, method) => {
     console.log('Sending data to server...');
     // const preferenceData = {
     //   habit_name: habitNameInputValue,
@@ -86,10 +95,8 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
     // console.log(preferenceData);
 
     try {
-      const url = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}
-`;
       const response = await fetch(url, {
-        method: 'POST',
+        method: method,
       });
       if (!response.ok) {
         console.error(
@@ -99,9 +106,10 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
       }
       const result = await response;
       console.log(
-        'Preference data has been sent to the server for processing.',
+        `Preference data has been sent to the server via a ${method} request and received the following response: `,
         result
       );
+      return result;
     } catch (error) {
       console.error('Failed to send POST request to server.', error);
     }
