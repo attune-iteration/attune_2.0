@@ -11,6 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.1.5",
     "@supabase/supabase-js": "^2.46.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
@@ -27,7 +29,6 @@
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
     "spotify-web-api-node": "^5.0.2",
-    "tailwindcss": "^3.4.14",
     "web-vitals": "^4.2.4"
   },
   "devDependencies": {
@@ -35,6 +36,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.20",
     "concurrently": "^9.1.0",
     "eslint": "^9.13.0",
     "eslint-plugin-react": "^7.37.2",
@@ -43,8 +45,10 @@
     "globals": "^15.11.0",
     "lucide-react": "^0.456.0",
     "nodemon": "^3.1.7",
+    "postcss": "^8.4.49",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.8",
+    "tailwindcss": "^3.4.14",
     "vite": "^5.4.10"
   }
 }

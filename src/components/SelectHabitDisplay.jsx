@@ -23,7 +23,7 @@ const SelectHabitDisplay = () => {
 
   return (
     <div>
-      <select value={dropdownOption} onChange={handleChange}>
+      <select className='bg-slate-950 rounded-lg place-items-start' value={dropdownOption} onChange={handleChange}>
         {options.map(option => (
           <option key={option.value} value={option.value}>
             {option.label}
