@@ -1,8 +1,12 @@
-import './App.css'
+/* eslint-disable no-unused-vars */
+import React from 'react'
+import MainContainer from './containers/MainContainer.jsx'
 
 function App() {
   return (
-    <div>Hello</div>
+    <div>
+      <MainContainer />
+    </div>
   )
 }
 
