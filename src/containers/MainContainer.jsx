@@ -7,7 +7,7 @@ import SelectHabitDisplay from '../components/SelectHabitDisplay.jsx';
 
 const MainContainer = () => {
 	return (
-		<div>
+		<div className='flex items-center justify-center h-screen flex-col bg-gradient-to-r from-slate-950 to-blue-950 font-sans text-teal-400'>
 			<WelcomeDisplay />
 			<CreateHabitDisplay />
 			<SelectHabitDisplay />

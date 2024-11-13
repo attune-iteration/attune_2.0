@@ -16,11 +16,11 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
 	];
 
   // Targets Placeholder
-  const targets = [
-    {id: 1, label: 'energy'}, 
-    {id: 2, label: 'danceability'}, 
-    {id: 3, label: 'valence'}, 
-  ]
+	const targets = [
+		{id: 1, label: 'Energy'}, 
+		{id: 2, label: 'Danceability'}, 
+		{id: 3, label: 'Valence'}, 
+	]
 
 	const [innerVisibility, setInnerVisibility] = useState(false);
 	const [habitNameInputValue, setHabitNameInputValue] = useState('');
@@ -91,7 +91,7 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
     }
     console.log(preferenceData);
     try {
-      const response = await fetch('http://localhost:3000/api/<endpoint>', {
+      const response = await fetch('http://localhost:3000/api/habits', {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(preferenceData)

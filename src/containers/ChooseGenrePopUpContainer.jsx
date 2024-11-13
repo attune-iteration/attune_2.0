@@ -1,13 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState }from 'react'
+import React, { useState } from 'react';
 
 // import PickGenreDisplay from '../components/PickGenreDisplay.jsx'
 
-const ChooseGenrePopUpContainer = ({ genres, closeInnerPopUp, handleCheckBoxChange, checkedGenres }) => {
-
+const ChooseGenrePopUpContainer = ({
+  genres,
+  closeInnerPopUp,
+  handleCheckBoxChange,
+  checkedGenres,
+}) => {
   return (
-    <div>
+    <div >
       <ul>
         {genres.map((genre) => (
           <li key={genre.id}>
@@ -25,12 +29,12 @@ const ChooseGenrePopUpContainer = ({ genres, closeInnerPopUp, handleCheckBoxChan
     </div>
   );
 
-    // return (
-    //   <div>
-    //     <PickGenreDisplay />
-    //     <button onClick={closeInnerPopUp}>Cancel</button>
-    //   </div>
-    // )
-  }
-  
-  export default ChooseGenrePopUpContainer;
+  // return (
+  //   <div>
+  //     <PickGenreDisplay />
+  //     <button onClick={closeInnerPopUp}>Cancel</button>
+  //   </div>
+  // )
+};
+
+export default ChooseGenrePopUpContainer;
