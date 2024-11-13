@@ -21,15 +21,7 @@ const ChooseGenrePopUpContainer = ({ genres, closeInnerPopUp, handleCheckBoxChan
           </li>
         ))}
       </ul>
-      <div>
-        <p>Display Selected Genre Here</p>
-        {checkedGenres.map((checkedGenre, index) => (
-          <span key={index}>{checkedGenre},</span>
-        ))}
       <button onClick={closeInnerPopUp}>Back</button>
-      </div> 
-
-      
     </div>
   );
 

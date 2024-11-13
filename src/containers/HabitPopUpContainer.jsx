@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 import ChooseGenrePopUpContainer from '../containers/ChooseGenrePopUpContainer.jsx';
 import SliderDisplay from '../components/SliderDisplay.jsx';
-import HabitName from '../components/HabitName.jsx';
+import HabitNameDisplay from '../components/HabitNameDisplay.jsx';
 
 const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   
@@ -81,45 +81,56 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   }
 
   const sendHabitPreferenceData = async () => {
-    console.log('Sending data to backend...'); 
+    console.log('Sending data to server...'); 
     const preferenceData = {
       habit_name: habitNameInputValue, 
       seed_genres: checkedGenres, 
-      target_energy: energyValue, 
-      target_danceability: danceabilityValue, 
-      target_valence: valenceValue
+      target_energy: energyValue / 100, 
+      target_danceability: danceabilityValue / 100, 
+      target_valence: valenceValue / 100
     }
     console.log(preferenceData);
     try {
       const response = await fetch('http://localhost:3000/api/<endpoint>', {
         method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(preferenceData)
       }); 
-      if (response.ok) {
-        const result = await response.json(); 
-        console.log('Preference data has been sent to the server for processing.', result);
+      if (!response.ok) {
+        console.error('An error occurred while fetching data: ', response.statusText);
       }
+      const result = await response.json(); 
+      console.log('Preference data has been sent to the server for processing.', result);
     } catch (error) {
-      console.log('Failed to send POST request to server.', error);
+      console.error('Failed to send POST request to server.', error);
     }
   }
 
 	return (
 		<div>
-			<button onClick={openInnerPopUp}>Choose Genres</button>
-			{innerVisibility && (
-				<ChooseGenrePopUpContainer
-          genres={genres}
-          closeInnerPopUp={closeInnerPopUp}
-          handleCheckBoxChange={handleCheckBoxChange}
-          checkedGenres={checkedGenres}
-				/>
-			)}
-			<HabitName
+			<HabitNameDisplay
 				handleInputChange={handleInputChange}
 				habitNameInputValue={habitNameInputValue}
 			/>
-			<SliderDisplay targets={targets} handleSliderChange={handleSliderChange} />
+			<button onClick={openInnerPopUp}>Choose Genres</button>
+			{innerVisibility && (
+				<ChooseGenrePopUpContainer
+					genres={genres}
+					closeInnerPopUp={closeInnerPopUp}
+					handleCheckBoxChange={handleCheckBoxChange}
+					checkedGenres={checkedGenres}
+				/>
+			)}
+			<p>
+				<strong>Selected Genre:</strong>
+			</p>
+			{checkedGenres.map((checkedGenre, index) => (
+				<span key={index}>{checkedGenre}, </span>
+			))}
+			<SliderDisplay
+				targets={targets}
+				handleSliderChange={handleSliderChange}
+			/>
 			<form onSubmit={handleSubmit}>
 				<button onClick={closePopUp}>Cancel</button>
 				<button type='submit'>GO</button>
