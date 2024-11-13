@@ -1,0 +1,40 @@
+// Route to get a single song recommendation without default values
+app.get('/recommendations', getAccessToken, async (req, res) => {
+  // Read parameters from request query
+  const { seed_genres, target_valence, target_danceability } = req.query;
+
+  // Validate that required parameters are provided
+  if (!seed_genres || !target_valence || !target_danceability) {
+    return res.status(400).json({
+      error: 'Missing required parameters: seed_genres, target_valence, target_danceability',
+    });
+  }
+
+  const genres = typeof seed_genres === 'string' ? seed_genres.split(',') : seed_genres;
+
+  try {
+    // Fetch a single song recommendation
+    const response = await spotifyApi.getRecommendations({
+      seed_genres: genres, // Pass the array of genres
+      target_valence: parseFloat(target_valence), // Parse valence to a number
+      target_danceability: parseFloat(target_danceability), // Parse danceability to a number
+      limit: 1, // Limit to 1 recommendation
+    });
+
+    console.log(response);
+
+    // Send the recommended track as JSON response
+    // we are grabbing the smallest image, but could grab a bigger one, biggest being at images[0]
+    const recommendations = response.body.tracks.map((track) => ({
+      name: track.name,
+      artist: track.artists[0].name,
+      uri: track.uri,
+      artwork: track.album.images[track.album.images.length - 1]?.url, // Gets the smallest image URL
+    }));
+
+    res.json({ recommendations });
+  } catch (err) {
+    console.error('Error fetching recommendations:', err);
+    res.status(500).json({ error: 'Failed to fetch song recommendations' });
+  }
+});
