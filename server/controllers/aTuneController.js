@@ -25,7 +25,7 @@ export const getHabits = async (req, res, next) => {
     //console.log('finished pool query');
     // console.log(data);
     // console.log(data.rows);
-    res.locals.habitlist = data.rows;
+    res.locals.habitlist = { habits: data.rows };
     return next();
   } catch {
     (error) =>

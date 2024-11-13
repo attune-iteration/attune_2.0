@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const openai = new OpenAI(config);
+const openai = new OpenAI();
 
 const aiRolePrompt = `
     You are a professional DJ and song recommender.

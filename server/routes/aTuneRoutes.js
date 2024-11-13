@@ -39,7 +39,7 @@ router.get('/spotify_recommendations', getAccessToken, fetchSong, (req, res) => 
  * user_id
  */
 router.post('/habits', addNewHabit, (req, res) => {
-  return res.status(200).send('ok, we have succesfully IGNORED your request to make a new habit, have a good day.');
+  return res.status(200).send('ok, your habit was created.');
 });
 
 router.get('/ask_ai', askAIForSongParameters, (req, res) => {
