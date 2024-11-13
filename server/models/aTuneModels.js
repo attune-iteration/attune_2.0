@@ -1,16 +1,31 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv'; // for loading environment variables
+import pg from 'pg';
+const { Pool } = pg;
 
 dotenv.config(); // ensure the environment variables are loaded
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_API_ANON_KEY;
+const supabaseUri = process.env.SUPABASE_URI;
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Supabase URL and key are required');
+if (!supabaseUrl || !supabaseKey || !supabaseUri) {
+  throw new Error('Supabase URL and key are required and supabase uri (in .env)');
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey); // create Supabase client instance to interact with Supabase proj
+const pool = new Pool({
+  connectionString: supabaseUri,
+});
+
+// module.exports = {
+//   query: (text, params, callback) => {
+//     return pool.query(text, params, callback);
+//   },
+// };
+
+export default pool;
+// pool.query everywhere
 
 /*
  * A function to get users via querying Supabase and select a user by ID
@@ -53,33 +68,72 @@ export const getDailyHabits = async (user_id) => {
 };
 
 /*
- * A function to create a new habit and update habit list via Supabase
+ * A function to create a new habit
  */
-export const makeDailyHabits = async (user_id, newHabit) => {
+export const createUserHabit = async (inputInfo) => {
   // fetch daily habits from Supabase
   try {
-    const { data: existingData, error: fetchError } = await supabase // query Supabase, </user_id> Replace <user_id> with the actual user's ID
-      .from('Users') // from Users table
-      .select('habits') // selecting the habits column
-      .eq('id', user_id) // filtered by user_id
-      .single(); //gets one object -- don't know if we need
+    // const { data: existingData, error: fetchError } = await supabase // query Supabase, </user_id> Replace <user_id> with the actual user's ID
+    //   .from('Users') // from Users table
+    //   .select('habits') // selecting the habits column
+    //   .eq('id', user_id) // filtered by user_id
+    //   .single(); //gets one object -- don't know if we need
 
-    if (fetchError) throw fetchError;
+    // if (fetchError) throw fetchError;
 
-    const currentHabits = existingData.habits || []; //get existing habits
-    const updatedHabits = currentHabits.concat(newHabit);
+    // const currentHabits = existingData.habits || []; //get existing habits
+    // const updatedHabits = currentHabits.concat(newHabit);
 
     //update data
-    const { data, error } = await supabase
-      .from('Users') // from Users table
-      .update({ habits: updatedHabits }) // selecting the habits column to new updated array
-      .eq('id', user_id); // filtered by user_id
 
-    if (error) throw error;
-    return data; // return fetched data
+    let queryString1 = `
+              BEGIN;
+      `;
+    pool.query(queryString1);
+
+    let queryString2 = `
+     WITH newGenres AS (
+                                  INSERT INTO public.genres_of_habit (genre_names)
+                                  VALUES ($1)    -- '["rock", "classical"]'::json
+                                  RETURNING _id
+    )
+
+
+
+    INSERT INTO public.habit_preference (
+    target_danceability,
+    target_energy,
+    target_valence,
+    habit_name,
+    user_id,
+    genres_of_habit_id
+    )
+    -- now we need the values, but instead we should select 
+
+    -- the below are working as the dollars turn into literal values
+
+    SELECT $2, $3, $4, $5, nu._id AS user_id, ng._id AS genres_of_habit_id FROM public._user nu 
+     --OUTER JOIN newGenres ng;
+     INNER JOIN newGenres ng ON true WHERE nu.name=$6;
+
+-- SELECT * from public._user;
+-- SELECT * from public.genres_of_habit;
+-- SELECT * FROM public.habit_preference;
+
+    `;
+    let queryVariables = [JSON.stringify(inputInfo.genres), inputInfo.target_danceability, inputInfo.target_energy, inputInfo.target_valence, inputInfo.habit_name, inputInfo.name];
+    pool.query(queryString2, queryVariables);
+
+    let queryString3 = `
+    COMMIT;
+    `;
+    pool.query(queryString3);
+
+    // if (error) throw error;
+    //return data; // return fetched data
+    return 'habit creation succesfull';
   } catch (error) {
     console.error('Error updating daily habits: ', error);
     throw error;
   }
 };
-
