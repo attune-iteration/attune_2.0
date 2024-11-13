@@ -19,7 +19,7 @@ app.use('/api', aTuneRoutes); // /api/dayview will be routed to the associated h
 
 // dont remove the _next parameter
 //
-app.use((err, req, res, _next) => {
+app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,

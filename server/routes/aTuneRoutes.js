@@ -42,9 +42,7 @@ router.post('/habits', addNewHabit, (req, res) => {
   return res.status(200).send('ok, your habit was created.');
 });
 
-router.get('/ask_ai', askAIForSongParameters, (req, res) => {
-  return res.status(200).json(res.locals.recommendation);
-});
+router.post('/ask_ai', askAIForSongParameters);
 
 router.get('/', (req, res) => {
   return res.status(200).send('hi, this is the api endpoint for aTune');
