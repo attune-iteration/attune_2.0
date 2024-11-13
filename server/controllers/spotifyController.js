@@ -32,7 +32,7 @@ const getAccessToken = async (req, res, next) => {
 
 const fetchSong = async (req, res, next) => {
   // Read parameters from request query
-  const { seed_genres, target_energy, target_danceability, target_valence } = req.query;
+  const { seed_genres, target_energy, target_danceability, target_valence, limit } = req.query;
 
   // Validate that required parameters are provided
   if (!seed_genres || !target_energy || !target_valence || !target_danceability) {
@@ -52,7 +52,7 @@ const fetchSong = async (req, res, next) => {
       seed_genres: genres, // Pass the array of genres
       target_valence: parseFloat(target_valence), // Parse valence to a number
       target_danceability: parseFloat(target_danceability), // Parse danceability to a number
-      limit: 1, // Limit to 1 recommendation
+      limit: limit, // Limit the number of recommendations!
     });
 
     console.log(response);
