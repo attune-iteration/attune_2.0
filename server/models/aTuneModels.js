@@ -85,7 +85,7 @@ export const createUserHabit = async (inputInfo) => {
     // const updatedHabits = currentHabits.concat(newHabit);
 
     //update data
-
+    console.log('Creating a new habit in our server...')
     let queryString1 = `
               BEGIN;
       `;
@@ -127,6 +127,8 @@ export const createUserHabit = async (inputInfo) => {
     let queryString3 = `
     COMMIT;
     `;
+
+    console.log('Habit created...')
     pool.query(queryString3);
 
     // if (error) throw error;
