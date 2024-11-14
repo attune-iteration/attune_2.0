@@ -36,7 +36,7 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   const navigate = useNavigate();
 
   const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
-  const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}`;
+  const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&limit=1`;
 
   const openInnerPopUp = () => setInnerVisibility(true);
   const closeInnerPopUp = () => setInnerVisibility(false);
