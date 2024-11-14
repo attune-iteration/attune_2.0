@@ -5,9 +5,9 @@ const { Pool } = pg;
 
 dotenv.config(); // ensure the environment variables are loaded
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_API_ANON_KEY;
-const supabaseUri = process.env.SUPABASE_URI;
+const supabaseUrl = process.env.SUPABASE_URL; // eslint-disable-line no-undef
+const supabaseKey = process.env.SUPABASE_API_ANON_KEY; // eslint-disable-line no-undef
+const supabaseUri = process.env.SUPABASE_URI; // eslint-disable-line no-undef
 
 if (!supabaseUrl || !supabaseKey || !supabaseUri) {
   throw new Error('Supabase URL and key are required and supabase uri (in .env)');
@@ -85,7 +85,7 @@ export const createUserHabit = async (inputInfo) => {
     // const updatedHabits = currentHabits.concat(newHabit);
 
     //update data
-    console.log('Creating a new habit in our server...')
+    console.log('Creating a new habit in our server...');
     let queryString1 = `
               BEGIN;
       `;
@@ -128,7 +128,7 @@ export const createUserHabit = async (inputInfo) => {
     COMMIT;
     `;
 
-    console.log('Habit created...')
+    console.log('Habit created...');
     pool.query(queryString3);
 
     // if (error) throw error;

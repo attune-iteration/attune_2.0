@@ -19,6 +19,7 @@ app.use('/api', aTuneRoutes); // /api/dayview will be routed to the associated h
 
 // dont remove the _next parameter
 //
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
