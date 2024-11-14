@@ -154,9 +154,15 @@ const spotifyGenres = [
   'world-music',
 ];
 
-const askAIForSongParameters = async (req, res) => {
+const askAIForSongParameters = async (req, res, next) => {
   try {
+    // console.log(req.body);
     const userPrompt = req.body.prompt;
+
+    // added error handleing
+    if (!userPrompt) {
+      return next({ err: 'user did not specify a prompt', status: 400, message: { err: 'please specify a prompt.' } });
+    }
 
     const completion = await openai.chat.completions.create({
       model: aiModel,

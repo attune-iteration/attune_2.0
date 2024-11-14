@@ -9,7 +9,8 @@
     "start": "concurrently `vite` `nodemon server/server.js`",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -31,6 +32,7 @@
     "react-router-dom": "^6.28.0",
     "react-scripts": "^5.0.1",
     "spotify-web-api-node": "^5.0.2",
+    "supertest": "^7.0.0",
     "web-vitals": "^4.2.4"
   },
   "devDependencies": {
@@ -52,5 +54,19 @@
     "prettier-plugin-tailwindcss": "^0.6.8",
     "tailwindcss": "^3.4.14",
     "vite": "^5.4.10"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@supabase/supabase-js)/"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
   }
 }
