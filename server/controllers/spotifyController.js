@@ -2,10 +2,23 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import dotenv from 'dotenv';
 dotenv.config();
 
+let engageBackup = process.env.ENGAGE_BACKUP;
+let clientId;
+let clientSecret;
+if (engageBackup === true) {
+  clientId = process.env.SPOTIFY_CLIENT_ID;
+  clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+  console.log('engaging backup spotify connection...');
+} else {
+  clientId = process.env.SPOTIFY_CLIENT_ID;
+  clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+  console.log('default spotify connection...');
+}
+
 // Initialize Spotify API with credentials
 const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.SPOTIFY_CLIENT_ID,
-  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+  clientId: clientId,
+  clientSecret: clientSecret,
   //redirectUri: 'http://localhost:3000/api/callback', // Adjust to your frontend URL
 });
 
