@@ -15,8 +15,8 @@ export const getHabits = async (req, res, next) => {
       });
     }
     //console.log(id);
-    const sqlString = `SELECT hp.*, u.name, gh.genre_names FROM habit_preference hp
-    JOIN _user u ON hp.user_id=u._id
+    const sqlString = `SELECT hp.*, u.name, gh.genre_names AS seed_genres FROM habit_preference hp
+    JOIN _user as u ON hp.user_id=u._id
     JOIN genres_of_habit gh ON gh._id=hp.genres_of_habit_id
     WHERE u.name=$1`;
     const values = [name];
