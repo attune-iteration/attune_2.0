@@ -2,9 +2,11 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 
+
 import ChooseGenrePopUpContainer from '../containers/ChooseGenrePopUpContainer.jsx';
 import SliderDisplay from '../components/SliderDisplay.jsx';
 import HabitNameDisplay from '../components/HabitNameDisplay.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   // Genres Placeholders
@@ -27,14 +29,25 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   const [energyValue, setEnergyValue] = useState(0);
   const [danceabilityValue, setDanceabilityValue] = useState(0);
   const [valenceValue, setValenceValue] = useState(0);
+  const [recommendations, setRecommendations] = useState({});
+  const navigate = useNavigate();
+
+  const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
+  const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}`;
 
   const openInnerPopUp = () => setInnerVisibility(true);
   const closeInnerPopUp = () => setInnerVisibility(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await sendHabitPreferenceData();
+    await makeRequest(createHabitsUrl, 'POST');
     closeInnerPopUp();
+    const response = await makeRequest(fetchRecommendationsUrl, 'GET');
+	if (response && response.recommendations) {
+		setRecommendations(response.recommendations[0])
+		const recommendationsString = JSON.stringify(response.recommendations[0]);
+		navigate(`/vibe?recommendations=${encodeURIComponent(recommendationsString)}`)
+	} 
   };
 
   const handleInputChange = (event) => {
@@ -74,7 +87,7 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
     setValenceValue(event.target.value);
   };
 
-  const sendHabitPreferenceData = async () => {
+  const makeRequest = async (url, method) => {
     console.log('Sending data to server...');
     // const preferenceData = {
     //   habit_name: habitNameInputValue,
@@ -86,10 +99,8 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
     // console.log(preferenceData);
 
     try {
-      const url = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}
-`;
       const response = await fetch(url, {
-        method: 'POST',
+        method: method,
       });
       if (!response.ok) {
         console.error(
@@ -97,11 +108,12 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
           response.statusText
         );
       }
-      const result = await response;
+      const result = await response.json();
       console.log(
-        'Preference data has been sent to the server for processing.',
+        `Preference data has been sent to the server via a ${method} request and received the following response: `,
         result
       );
+      return result;
     } catch (error) {
       console.error('Failed to send POST request to server.', error);
     }
@@ -132,9 +144,16 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
         targets={targets}
         handleSliderChange={handleSliderChange}
       />
-      <form onSubmit={handleSubmit}>
-        <button onClick={closePopUp}>Cancel</button>
-        <button type='submit'>GO</button>
+      <form
+        onSubmit={handleSubmit}
+        className='flex justify-between mt-6 px-4 sm:px-8 w-full max-w-2xl mx-auto'
+      >
+        <button onClick={closePopUp} className=''>
+          Cancel
+        </button>
+        <button type='submit' className=''>
+          GO
+        </button>
       </form>
     </div>
   );
