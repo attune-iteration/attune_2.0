@@ -6,9 +6,9 @@ const { Pool } = pg;
 
 dotenv.config(); // ensure the environment variables are loaded
 
-const supabaseUrl = process.env.SUPABASE_URL; // eslint-disable-line no-undef
-const supabaseKey = process.env.SUPABASE_API_ANON_KEY; // eslint-disable-line no-undef
-const supabaseUri = process.env.SUPABASE_URI; // eslint-disable-line no-undef
+const supabaseUrl = process.env.SUPABASE_URL; // xeslint-disable-line no-undef
+const supabaseKey = process.env.SUPABASE_API_ANON_KEY; // xeslint-disable-line no-undef
+const supabaseUri = process.env.SUPABASE_URI; // xeslint-disable-line no-undef
 
 if (!supabaseUrl || !supabaseKey || !supabaseUri) {
   throw new Error('Supabase URL and key are required and supabase uri (in .env)');
