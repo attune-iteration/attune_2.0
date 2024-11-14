@@ -48,6 +48,8 @@ router.post('/habits', setLocalsFromCookieSession, addNewHabit, (req, res) => {
 router.post('/ask_ai', setLocalsFromCookieSession, askAIForSongParameters);
 
 router.post('/signup', createAccount, createSessionFromLocals, (req, res, next) => {
+  //  res.cookie('ssidATTUNE', 'hi', { httpOnly: true, sameSite: 'None' });
+
   res.status(200).json({ message: 'ok, account was created', succesful: true });
 });
 router.post('/login', logInUser, createSessionFromLocals, (req, res, next) => {
