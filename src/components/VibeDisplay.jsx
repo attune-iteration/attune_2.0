@@ -4,7 +4,7 @@ import React from 'react'
 
 const VibeDisplay = () => {
     return (
-      <div>
+      <div className='text-gray-200'>
         <h3>Here's The Vibe!</h3>
         <p>Spotify music here</p>
         

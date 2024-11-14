@@ -14,14 +14,14 @@ const ChooseGenrePopUpContainer = ({
     <div >
       <ul>
         {genres.map((genre) => (
-          <li key={genre.id}>
+          <li key={genre.id} className='text-gray-200'>
             <input
               type='checkbox'
               id={genre.id}
               checked={checkedGenres.includes(genre.label)}
               onChange={() => handleCheckBoxChange(genre.label)}
             />
-            <label htmlFor={genre.id}>{genre.label}</label>
+            <label htmlFor={genre.id}> {genre.label}</label>
           </li>
         ))}
       </ul>
