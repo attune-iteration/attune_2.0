@@ -1,41 +1,42 @@
- /* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 
 import VibePopUpContainer from '../containers/VibePopUpContainer.jsx';
 
 const SelectHabitDisplay = () => {
-
-  const [ dropdownOption, setDropdownOption ] = useState('Select a Habit');
-  const [ visibility, setVisibility ] = useState(false);
+  const [dropdownOption, setDropdownOption] = useState('Select a Habit');
+  const [visibility, setVisibility] = useState(false);
 
   const openPopUp = () => setVisibility(true);
   const closePopUp = () => setVisibility(false);
 
   const options = [
-		{ label: 'Habit Name 1', value: 'Value 1' },
-		{ label: 'Habit Name 2', value: 'Value 2' },
-		{ label: 'Habit Name 3', value: 'Value 3' }
+    { label: 'Habit Name 1', value: 'Value 1' },
+    { label: 'Habit Name 2', value: 'Value 2' },
+    { label: 'Habit Name 3', value: 'Value 3' },
   ];
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     setDropdownOption(event.target.value);
-  }
+  };
 
   return (
     <div>
-      <select className='bg-slate-950 rounded-lg place-items-start' value={dropdownOption} onChange={handleChange}>
-        {options.map(option => (
+      <select
+        className='place-items-start bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        value={dropdownOption}
+        onChange={handleChange}
+      >
+        {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
       <button onClick={openPopUp}>GO</button>
-      {visibility && (
-        <VibePopUpContainer closePopUp={closePopUp} />
-      )}
+      {visibility && <VibePopUpContainer closePopUp={closePopUp} />}
     </div>
-  )
+  );
 };
 
 export default SelectHabitDisplay;

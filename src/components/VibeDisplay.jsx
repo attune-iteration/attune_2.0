@@ -7,6 +7,7 @@ const VibeDisplay = () => {
       <div>
         <h3>Here's The Vibe!</h3>
         <p>Spotify music here</p>
+        
       </div>
     )
   }
