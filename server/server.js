@@ -5,7 +5,24 @@ import cookieParser from 'cookie-parser';
 import aTuneRoutes from './routes/aTuneRoutes.js';
 import initializeTables from './controllers/initializeDatabase.js';
 const app = express();
-app.use(cors());
+//app.use(cors());
+
+// app.use(
+//   cors({
+//     origin: 'http://localhost:5173',
+//     credentials: true, // needed
+//   })
+// );
+// this is metter
+app.use((req, res, next) => {
+  console.log('allowing cors');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Replace with your frontend's origin
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials
+  next();
+});
+
 app.use(json());
 app.use(cookieParser());
 
