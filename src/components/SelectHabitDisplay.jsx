@@ -18,11 +18,6 @@ const SelectHabitDisplay = ({handleSelectOptionChange, habits}) => {
   const openPopUp = () => setVisibility(true);
   const closePopUp = () => setVisibility(false);
 
-  const options = [
-    { label: 'Habit Name 1', value: 'Value 1' },
-    { label: 'Habit Name 2', value: 'Value 2' },
-    { label: 'Habit Name 3', value: 'Value 3' },
-  ];
 
   const handleChange = (event) => {
     setDropdownOption(event.target.value);
