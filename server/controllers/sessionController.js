@@ -12,6 +12,8 @@ export const createSessionFromLocals = async (req, res, next) => {
   const queryString1 = `
   SELECT _id,ssid FROM public.session
   WHERE username = $1 AND password = $2;
+  -- this verifies username and password, so if either are incorrect, the session will not be created.
+  -- so if you have a session, that means that you had the correct password at some point.
   `;
   const queryValues1 = [res.locals.username, res.locals.password];
 
@@ -68,7 +70,7 @@ export const setLocalsFromCookieSession = async (req, res, next) => {
       return next({ log: 'err, user did have ssidATTUNE cookie but it was not in database', status: 400, message: 'your session may be expired.' });
     } else {
       res.locals.username = resp.rows[0].username;
-      res.locals.username = resp.rows[0].password;
+      res.locals.password = resp.rows[0].password;
       console.log('user has active session...');
       next();
     }
