@@ -10,7 +10,7 @@ const MainContainer = () => {
 		<div className='flex items-center justify-center h-screen flex-col font-sans text-teal-400'>
 			<WelcomeDisplay />
 			<CreateHabitDisplay />
-			<p className='mb-6'><strong>OR</strong></p>
+			<p className='mb-6 text-3xl'><strong>OR</strong></p>
 			<p className='mb-2'>Choose your existing habit</p>
 			<SelectHabitDisplay />
 		</div>

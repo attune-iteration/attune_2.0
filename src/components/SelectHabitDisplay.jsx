@@ -21,21 +21,29 @@ const SelectHabitDisplay = () => {
   };
 
   return (
-    <div>
-      <select
-        className='place-items-start bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-        value={dropdownOption}
-        onChange={handleChange}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <button onClick={openPopUp}>GO</button>
-      {visibility && <VibePopUpContainer closePopUp={closePopUp} />}
-    </div>
+		<div>
+			<select
+				className='bg-teal-500 border-2 border-teal-500 hover:bg-teal-700 hover:border-2 hover:border-teal-500 text-white font-bold py-2 px-4 rounded m-4'
+				value={dropdownOption}
+				onChange={handleChange}
+			>
+				{options.map((option) => (
+					<option
+						key={option.value}
+						value={option.value}
+					>
+						{option.label}
+					</option>
+				))}
+			</select>
+			<button
+				className='bg-teal-700 border-2 border-teal-700 hover:bg-teal-800 hover:border-2 hover:border-teal-700 text-white font-bold py-3 px-6 rounded m-4'
+				onClick={openPopUp}
+			>
+				GO
+			</button>
+			{visibility && <VibePopUpContainer closePopUp={closePopUp} />}
+		</div>
   );
 };
 
