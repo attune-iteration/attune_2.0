@@ -19,7 +19,7 @@ const router = Router();
 //return the response as a json object: "habits": [{habit_name, seed_genres, target_energy,
 //target_danceability, target_valence }]
 //middleware: aTuneController.getHabits
-router.get('/habits/all', getHabits, (req, res) => {
+router.get('/habits/all', getHabits, (_req, res) => {
   console.log('got right back to get');
   return res.status(200).send(res.locals.habitlist);
 });
@@ -28,7 +28,7 @@ router.get('/habits/all', getHabits, (req, res) => {
  * A route for getting a single song from the database
  */
 // required, query params with the seperate formula values that are associated witht this habit
-router.get('/spotify_recommendations', getAccessToken, fetchSong, (req, res) => {
+router.get('/spotify_recommendations', getAccessToken, fetchSong, (_req, res) => {
   const recommendations = res.locals.recommendations;
   return res.status(200).json({ recommendations });
 });
@@ -38,6 +38,7 @@ router.get('/spotify_recommendations', getAccessToken, fetchSong, (req, res) => 
  * expects all the correct parameters form the user as query params, such as
  * user_id
  */
+
 router.post('/habits', addNewHabit, (req, res) => {
   return res.status(200).send('ok, your habit was created, unless you did not specify a name, in which case, your habit was not created.');
 });

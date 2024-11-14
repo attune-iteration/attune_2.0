@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv'; // for loading environment variables
 import pg from 'pg';

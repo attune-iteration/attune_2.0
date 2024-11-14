@@ -36,7 +36,7 @@ export const getHabits = async (req, res, next) => {
       });
   }
 };
-export const userId = async (req, res, next) => {
+export const userId = async (req, _res, next) => {
   // console.log({ req });
   try {
     // const dailyHabits = await aTuneModels.getDailyHabits(); // call model to fetch dailyHabits from Supabase
@@ -62,7 +62,7 @@ export const userId = async (req, res, next) => {
 /*
  * Middleware to get daily habits via Supabase using the userId query parameter
  */
-export const getDaily = async (req, res, next) => {
+export const getDaily = async (req, _res, next) => {
   try {
     const id = req.query.userId;
     const dailyHabits = await getDailyHabits(id); // call model to fetch dailyHabits from Supabase

@@ -7,10 +7,11 @@ import SelectHabitDisplay from '../components/SelectHabitDisplay.jsx';
 
 const MainContainer = () => {
 	return (
-		<div className='flex items-center justify-center h-screen flex-col bg-gradient-to-r from-slate-950 to-blue-950 font-sans text-teal-400'>
+		<div className='flex items-center justify-center h-screen flex-col font-sans text-teal-400'>
 			<WelcomeDisplay />
 			<CreateHabitDisplay />
-			<p className='mb-6'>OR</p>
+			<p className='mb-6'><strong>OR</strong></p>
+			<p className='mb-2'>Choose your existing habit</p>
 			<SelectHabitDisplay />
 		</div>
 	);
