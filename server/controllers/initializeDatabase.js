@@ -77,6 +77,27 @@ const createUserTable = async () => {
   }
 };
 
+const createSessionTable = async () => {
+  const tableName = 'session';
+  const tableExists = await checkTableExists(tableName);
+
+  if (!tableExists) {
+    const createTableQuery = `
+          CREATE TABLE ${tableName} (
+            _id SERIAL PRIMARY KEY,
+            username VARCHAR(255) UNIQUE,
+            password VARCHAR(255),
+            ssid NUMERIC UNIQUE,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+
+          );
+        `;
+    await pool.query(createTableQuery);
+  } else {
+    console.log(`${tableName} table already exists`);
+  }
+};
+
 const createGenreTable = async () => {
   const tableName = 'genres_of_habit';
   const tableExists = await checkTableExists(tableName);
@@ -107,6 +128,7 @@ const initializeTables = async () => {
   await createUserTable();
   await createGenreTable();
   await createHabitPreferenceTable();
+  await createSessionTable();
 };
 
 export default initializeTables;
