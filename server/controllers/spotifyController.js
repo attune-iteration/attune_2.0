@@ -50,7 +50,7 @@ const fetchSong = async (req, res, next) => {
   // Validate that required parameters are provided
   if (!seed_genres || !target_energy || !target_valence || !target_danceability || !limit) {
     return next({
-      log: 'in sporifyController.fetchSong, Missing required parameters: seed_genres, target_energy, target_valence, target_danceability, limit',
+      log: 'in spotifyController.fetchSong, Missing required parameters: seed_genres, target_energy, target_valence, target_danceability, limit',
       status: 400,
       message: { err: 'Missing required parameters: seed_genres, target_energy, target_valence, target_danceability, limit' },
     });
