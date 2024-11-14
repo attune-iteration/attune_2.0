@@ -1,11 +1,19 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import VibePopUpContainer from '../containers/VibePopUpContainer.jsx';
 
-const SelectHabitDisplay = () => {
+const SelectHabitDisplay = ({handleSelectOptionChange, habits}) => {
   const [dropdownOption, setDropdownOption] = useState('Select a Habit');
   const [visibility, setVisibility] = useState(false);
+
+  // on mount, fetch the habits
+  useEffect(() => {
+    // Going to comment this out really quickly to do some testing - 
+    // feel free to uncomment when needed
+    // onMount();
+  }, []);
 
   const openPopUp = () => setVisibility(true);
   const closePopUp = () => setVisibility(false);
@@ -18,22 +26,26 @@ const SelectHabitDisplay = () => {
 
   const handleChange = (event) => {
     setDropdownOption(event.target.value);
+    console.log('Select habit clicked:', event.target.value);
   };
 
   return (
     <div>
       <select
-        className='place-items-start bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        className='place-items-start bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-4 rounded mr-6'
         value={dropdownOption}
+        placeholder='Choose an existing habit'
         onChange={handleChange}
+        onClick={handleSelectOptionChange}
       >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+       <option value="" selected>Select A Habit</option>
+        {habits && habits.map((habit, index) => (
+          <option key={index} value={habit.habit_name}> 
+            {habit.habit_name}
           </option>
         ))}
       </select>
-      <button onClick={openPopUp}>GO</button>
+      <button onClick={openPopUp} className='rounded border-2 border-blue-500 px-4 py-1 text-gray-200' >GO</button>
       {visibility && <VibePopUpContainer closePopUp={closePopUp} />}
     </div>
   );
