@@ -98,7 +98,7 @@ export const createUserHabit = async (inputInfo) => {
                                   VALUES ($1)    -- '["rock", "classical"]'::json
                                   RETURNING _id
     )
-
+    -- the above happends even if a user is not present because it does not error out if no user present...
 
 
     INSERT INTO public.habit_preference (

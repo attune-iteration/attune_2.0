@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { getHabits, addNewHabit } from '../controllers/aTuneController.js';
 import { getAccessToken, fetchSong } from '../controllers/spotifyController.js';
+import { createAccount, logInUser } from '../controllers/authentificationController.js';
+import { createSessionFromLocals, setLocalsFromCookieSession } from '../controllers/sessionController.js';
 import askAIForSongParameters from '../controllers/aiController.js';
 const router = Router();
 
@@ -19,7 +21,7 @@ const router = Router();
 //return the response as a json object: "habits": [{habit_name, seed_genres, target_energy,
 //target_danceability, target_valence }]
 //middleware: aTuneController.getHabits
-router.get('/habits/all', getHabits, (_req, res) => {
+router.get('/habits/all', setLocalsFromCookieSession, getHabits, (_req, res) => {
   console.log('got right back to get');
   return res.status(200).send(res.locals.habitlist);
 });
@@ -28,7 +30,7 @@ router.get('/habits/all', getHabits, (_req, res) => {
  * A route for getting a single song from the database
  */
 // required, query params with the seperate formula values that are associated witht this habit
-router.get('/spotify_recommendations', getAccessToken, fetchSong, (_req, res) => {
+router.get('/spotify_recommendations', setLocalsFromCookieSession, getAccessToken, fetchSong, (_req, res) => {
   const recommendations = res.locals.recommendations;
   return res.status(200).json({ recommendations });
 });
@@ -39,11 +41,18 @@ router.get('/spotify_recommendations', getAccessToken, fetchSong, (_req, res) =>
  * user_id
  */
 
-router.post('/habits', addNewHabit, (req, res) => {
+router.post('/habits', setLocalsFromCookieSession, addNewHabit, (req, res) => {
   return res.status(200).send('ok, your habit was created, unless you did not specify a name, in which case, your habit was not created.');
 });
 
-router.post('/ask_ai', askAIForSongParameters);
+router.post('/ask_ai', setLocalsFromCookieSession, askAIForSongParameters);
+
+router.post('/signup', createAccount, createSessionFromLocals, (req, res, next) => {
+  res.status(200).json({ message: 'ok, account was created', succesful: true });
+});
+router.post('/login', logInUser, createSessionFromLocals, (req, res, next) => {
+  res.status(200).json({ message: 'ok, you logged in', succesful: true, username: res.locals.username });
+});
 
 router.get('/', (req, res) => {
   return res.status(404).send('This route is not legal');
