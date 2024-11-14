@@ -8,7 +8,7 @@ const HabitName = ({ handleInputChange, habitNameInputValue }) => {
     return (
 		<div className='text-center'>
 			<form>
-				<p className=' pb-5 text-teal-500'>
+				<p className='pb-5 text-teal-500'>
 					<strong>NAME YOUR HABIT</strong>
 				</p>
 				<input

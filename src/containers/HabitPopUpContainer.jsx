@@ -138,106 +138,136 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
 		{ id: 126, label: 'world-music', text: 'World Music' },
 	];
 
-	// Targets Placeholder
-	const targets = [
-		{ id: 1, label: 'Energy' },
-		{ id: 2, label: 'Danceability' },
-		{ id: 3, label: 'Valence' },
-	];
+  // Targets Placeholder
+  const targets = [
+    { id: 1, label: 'Energy' },
+    { id: 2, label: 'Danceability' },
+    { id: 3, label: 'Valence' },
+  ];
 
-	const [innerVisibility, setInnerVisibility] = useState(false);
-	const [habitNameInputValue, setHabitNameInputValue] = useState('');
-	const [checkedGenres, setCheckedGenres] = useState([]);
-	const [energyValue, setEnergyValue] = useState(0);
-	const [danceabilityValue, setDanceabilityValue] = useState(0);
-	const [valenceValue, setValenceValue] = useState(0);
-	const [recommendations, setRecommendations] = useState({});
-	const navigate = useNavigate();
+  const [innerVisibility, setInnerVisibility] = useState(false);
+  const [habitNameInputValue, setHabitNameInputValue] = useState('');
+  const [checkedGenres, setCheckedGenres] = useState([]);
+  const [energyValue, setEnergyValue] = useState(0);
+  const [danceabilityValue, setDanceabilityValue] = useState(0);
+  const [valenceValue, setValenceValue] = useState(0);
+  const [recommendations, setRecommendations] = useState({});
 
-	const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
-	const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}`;
+  const [aiModalVisible, setAiModalVisible] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
 
-	const openInnerPopUp = () => setInnerVisibility(true);
-	const closeInnerPopUp = () => setInnerVisibility(false);
+  const navigate = useNavigate();
 
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-		await makeRequest(createHabitsUrl, 'POST');
-		const response = await makeRequest(fetchRecommendationsUrl, 'GET');
-		closeInnerPopUp();
-		if (response && response.recommendations) {
-			setRecommendations(response.recommendations[0]);
-			const recommendationsString = JSON.stringify(
-				response.recommendations[0]
-			);
-			navigate(
-				`/vibe?recommendations=${encodeURIComponent(recommendationsString)}`
-			);
-		}
-	};
+  const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
+  const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}`;
 
-	const handleInputChange = (event) => {
-		console.log(event.target.value);
-		setHabitNameInputValue(event.target.value);
-	};
+  const openInnerPopUp = () => setInnerVisibility(true);
+  const closeInnerPopUp = () => setInnerVisibility(false);
 
-	const handleCheckBoxChange = (genreLabel) => {
-		setCheckedGenres((prevCheckedGenres) => {
-			if (prevCheckedGenres.includes(genreLabel)) {
-				return prevCheckedGenres.filter((id) => id !== genreLabel);
-			} else {
-				return [...prevCheckedGenres, genreLabel];
-			}
-		});
-	};
+  const openAiModal = () => setAiModalVisible(true);
+  const closeAiModal = () => setAiModalVisible(false);
 
-	const handleSliderChange = (targetId, event) => {
-		if (targetId === targets[0].id) {
-			handleEnergySliderChange(event);
-		} else if (targetId === targets[1].id) {
-			handleDanceabilitySliderChange(event);
-		} else {
-			handleValenceSliderChange(event);
-		}
-	};
+  const handleAiPromptChange = (event) => {
+    setAiPrompt(event.target.value);
+  };
 
-	const handleEnergySliderChange = (event) => {
-		setEnergyValue(event.target.value);
-	};
+  const makeRequest = async (url, method, body = null) => {
+    console.log('Sending data to server...');
+    try {
+      const options = {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      if (body) {
+        options.body = JSON.stringify(body);
+      }
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        console.error(
+          'An error occurred while fetching data: ',
+          response.statusText
+        );
+        return null;
+      }
+      const result = await response.json();
+      console.log(`Received response from server: `, result);
+      return result;
+    } catch (error) {
+      console.error('Failed to send request to server.', error);
+      return null;
+    }
+  };
 
-	const handleDanceabilitySliderChange = (event) => {
-		setDanceabilityValue(event.target.value);
-	};
+  const handleAiSubmit = async (event) => {
+    event.preventDefault();
+    const response = await makeRequest(
+      'http://localhost:5001/api/ask_ai',
+      'POST',
+      { prompt: aiPrompt }
+    );
+    closeAiModal();
+    if (response) {
+      setEnergyValue(response.target_energy * 100);
+      setDanceabilityValue(response.target_danceability * 100);
+      setValenceValue(response.target_valence * 100);
+      setCheckedGenres(response.seed_genres.split(','));
+    }
+  };
 
-	const handleValenceSliderChange = (event) => {
-		setValenceValue(event.target.value);
-	};
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await makeRequest(createHabitsUrl, 'POST');
+    const response = await makeRequest(fetchRecommendationsUrl, 'GET');
+    closeInnerPopUp();
+    if (response && response.recommendations) {
+      setRecommendations(response.recommendations[0]);
+      const recommendationsString = JSON.stringify(response.recommendations[0]);
+      navigate(
+        `/vibe?recommendations=${encodeURIComponent(recommendationsString)}`
+      );
+    }
+  };
 
-	const makeRequest = async (url, method) => {
-		console.log('Sending data to server...');
+  const handleInputChange = (event) => {
+    console.log(event.target.value);
+    setHabitNameInputValue(event.target.value);
+  };
 
-		try {
-			const response = await fetch(url, {
-				method: method,
-			});
-			if (!response.ok) {
-				console.error(
-					'An error occurred while fetching data: ',
-					response.statusText
-				);
-			}
-			const result = await response.json();
-			console.log(
-				`Preference data has been sent to the server via a ${method} request and received the following response: `,
-				result
-			);
-			return result;
-		} catch (error) {
-			console.error('Failed to send POST request to server.', error);
-		}
-	};
+  const handleCheckBoxChange = (genreLabel) => {
+    setCheckedGenres((prevCheckedGenres) => {
+      if (prevCheckedGenres.includes(genreLabel)) {
+        return prevCheckedGenres.filter((id) => id !== genreLabel);
+      } else {
+        return [...prevCheckedGenres, genreLabel];
+      }
+    });
+  };
 
-	return (
+  const handleSliderChange = (targetId, event) => {
+    if (targetId === targets[0].id) {
+      handleEnergySliderChange(event);
+    } else if (targetId === targets[1].id) {
+      handleDanceabilitySliderChange(event);
+    } else {
+      handleValenceSliderChange(event);
+    }
+  };
+
+  const handleEnergySliderChange = (event) => {
+    setEnergyValue(event.target.value);
+  };
+
+  const handleDanceabilitySliderChange = (event) => {
+    setDanceabilityValue(event.target.value);
+  };
+
+  const handleValenceSliderChange = (event) => {
+    setValenceValue(event.target.value);
+  };
+
+  return (
 		<div
 			className={`fixed inset-0 w-full h-screen flex flex-col justify-center items-center text-center bg-black bg-opacity-30`}
 		>
@@ -248,7 +278,7 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
 				/>
 				<br></br>
 				<button
-					className='bg-slate-900 hover:bg-slate-800 p-4 rounded-lg'
+					className='bg-slate-900 hover:bg-slate-800 active:bg-slate-700 p-4 rounded-lg'
 					onClick={openInnerPopUp}
 				>
 					Choose Genres
@@ -272,6 +302,9 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
 				<SliderDisplay
 					targets={targets}
 					handleSliderChange={handleSliderChange}
+					energyValue={energyValue}
+					danceabilityValue={danceabilityValue}
+					valenceValue={valenceValue}
 				/>
 				<form
 					onSubmit={handleSubmit}
@@ -279,20 +312,56 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
 				>
 					<button
 						onClick={closePopUp}
-						className='bg-slate-900 hover:bg-slate-800 p-4 rounded-lg'
+						className='bg-slate-900 hover:bg-slate-800 active:bg-slate-700 p-4 rounded-lg'
 					>
 						Cancel
 					</button>
 					<button
 						type='submit'
-						className='bg-slate-900 hover:bg-slate-800 p-4 rounded-lg'
+						className='bg-slate-900 hover:bg-slate-800 active:bg-slate-700 p-4 rounded-lg'
 					>
 						GO
 					</button>
+					<button
+						type='button'
+						onClick={openAiModal}
+						className='bg-slate-900 hover:bg-slate-800 active:bg-slate-700 p-4 rounded-lg'
+					>
+						Ask AI
+					</button>
 				</form>
+				{aiModalVisible && (
+					<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+						<div className='bg-gray-900 p-6 w-1/2 h-1/4 rounded-3xl'>
+							<form onSubmit={handleAiSubmit}>
+								<textarea
+									value={aiPrompt}
+									onChange={handleAiPromptChange}
+									placeholder='Enter your prompt here...'
+									className='w-full h-48 p-2 border-2 border-gray-700 bg-gray-800 text-teal-500 rounded-xl'
+								/>
+								<div className='flex justify-end mt-4'>
+									<button
+										type='button'
+										onClick={closeAiModal}
+										className='bg-slate-800 hover:bg-slate-700 active:bg-slate-600 p-4 rounded-lg mx-4'
+									>
+										Cancel
+									</button>
+									<button
+										className='bg-slate-800 hover:bg-slate-700 active:bg-slate-600 p-4 rounded-lg mx-4'
+										type='submit'
+									>
+										Submit
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				)}
 			</div>
 		</div>
-	);
+  );
 };
 
 export default HabitPopUpContainer;
