@@ -2,9 +2,11 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 
+
 import ChooseGenrePopUpContainer from '../containers/ChooseGenrePopUpContainer.jsx';
 import SliderDisplay from '../components/SliderDisplay.jsx';
 import HabitNameDisplay from '../components/HabitNameDisplay.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   // Genres Placeholders
@@ -27,7 +29,8 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   const [energyValue, setEnergyValue] = useState(0);
   const [danceabilityValue, setDanceabilityValue] = useState(0);
   const [valenceValue, setValenceValue] = useState(0);
-  const [recommendations, setRecommendations] = useState([]);
+  const [recommendations, setRecommendations] = useState({});
+  const navigate = useNavigate();
 
   const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
   const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}`;
@@ -40,9 +43,10 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
     await makeRequest(createHabitsUrl, 'POST');
     closeInnerPopUp();
     const response = await makeRequest(fetchRecommendationsUrl, 'GET');
-	if (response) {
-		setRecommendations(response)
-		console.log(recommendations);
+	if (response && response.recommendations) {
+		setRecommendations(response.recommendations[0])
+		const recommendationsString = JSON.stringify(response.recommendations[0]);
+		navigate(`/vibe?recommendations=${encodeURIComponent(recommendationsString)}`)
 	} 
   };
 
@@ -104,7 +108,7 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
           response.statusText
         );
       }
-      const result = await response;
+      const result = await response.json();
       console.log(
         `Preference data has been sent to the server via a ${method} request and received the following response: `,
         result
@@ -140,9 +144,16 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
         targets={targets}
         handleSliderChange={handleSliderChange}
       />
-      <form onSubmit={handleSubmit}>
-        <button onClick={closePopUp}>Cancel</button>
-        <button type='submit'>GO</button>
+      <form
+        onSubmit={handleSubmit}
+        className='flex justify-between mt-6 px-4 sm:px-8 w-full max-w-2xl mx-auto'
+      >
+        <button onClick={closePopUp} className=''>
+          Cancel
+        </button>
+        <button type='submit' className=''>
+          GO
+        </button>
       </form>
     </div>
   );

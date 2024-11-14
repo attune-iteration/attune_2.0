@@ -10,6 +10,7 @@ const MainContainer = () => {
 		<div className='flex items-center justify-center h-screen flex-col bg-gradient-to-r from-slate-950 to-blue-950 font-sans text-teal-400'>
 			<WelcomeDisplay />
 			<CreateHabitDisplay />
+			<p className='mb-6'>OR</p>
 			<SelectHabitDisplay />
 		</div>
 	);
