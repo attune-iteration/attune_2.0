@@ -2,12 +2,12 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import dotenv from 'dotenv';
 dotenv.config();
 
-let engageBackup = process.env.ENGAGE_BACKUP;
+let engageBackup = process.env.ENGAGE_BACKUP_SPOTIFY;
 let clientId;
 let clientSecret;
-if (engageBackup === true) {
-  clientId = process.env.SPOTIFY_CLIENT_ID;
-  clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+if (engageBackup === 'true') {
+  clientId = process.env.BACKUP_SPOTIFY_CLIENT_ID;
+  clientSecret = process.env.BACKUP_SPOTIFY_CLIENT_SECRET;
   console.log('engaging backup spotify connection...');
 } else {
   clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -57,7 +57,7 @@ const fetchSong = async (req, res, next) => {
   }
 
   // convert the seed_genres to a comma-separated string
-  const genres = typeof seed_genres === 'string' ? seed_genres.split(',') : seed_genres;
+  const genres = Array.isArray(seed_genres) ? seed_genres.join(',') : seed_genres;
 
   try {
     // Fetch a single song recommendation
@@ -65,7 +65,7 @@ const fetchSong = async (req, res, next) => {
       seed_genres: genres, // Pass the array of genres
       target_valence: parseFloat(target_valence), // Parse valence to a number
       target_danceability: parseFloat(target_danceability), // Parse danceability to a number
-      limit: limit, // Limit the number of recommendations!
+      limit: Number(limit), // Limit the number of recommendations!
     });
 
     console.log(response);
