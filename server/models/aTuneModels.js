@@ -31,24 +31,26 @@ export default pool;
 /*
  * A function to get users via querying Supabase and select a user by ID
  */
-export const getUserId = async (userName) => {
-  // fetch daily mood from Supabase
-  console.log({ userName });
-  try {
-    const users = await supabase.from('Users').select('*');
-    console.log({ users });
-    const { data, error } = await supabase // query Supabase, </user_id> Replace <user_id> with the actual user's ID
-      .from('Users') // from Users table
-      .select('id') // selecting the habits column
-      .eq('name', userName); // filtered by user_id
-    console.log({ data });
-    if (error) throw error;
-    return data; // return fetched data
-  } catch (error) {
-    console.error('Error fetching daily habits: ', error);
-    throw error;
-  }
-};
+// commented out as of 11-14-2024 13:55
+// reason: the only function that used this has now been depricated.
+// export const getUserId = async (userName) => {
+//   // fetch daily mood from Supabase
+//   console.log({ userName });
+//   try {
+//     const users = await supabase.from('Users').select('*');
+//     console.log({ users });
+//     const { data, error } = await supabase // query Supabase, </user_id> Replace <user_id> with the actual user's ID
+//       .from('Users') // from Users table
+//       .select('id') // selecting the habits column
+//       .eq('name', userName); // filtered by user_id
+//     console.log({ data });
+//     if (error) throw error;
+//     return data; // return fetched data
+//   } catch (error) {
+//     console.error('Error fetching daily habits: ', error);
+//     throw error;
+//   }
+// };
 
 /*
  * A function to get users via querying supabase and get habits by user ID
