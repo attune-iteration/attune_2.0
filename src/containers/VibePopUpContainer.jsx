@@ -6,12 +6,11 @@ import VibeDisplay from '../components/VibeDisplay.jsx';
 import { useLocation } from 'react-router-dom';
 
 const VibePopUpContainer = ({ closePopUp, recommendations }) => {
-
   // const [visibility, setVisibility] = useState(false);
 
   // const openPopUp = () => setVisibility(true);
   // const closePopUp = () => setVisibility(false);
-  
+
   // Note for Funan: this is data for the fetched Spotify song
   // const location = useLocation(); 
   // const queryParams = new URLSearchParams(location.search); 

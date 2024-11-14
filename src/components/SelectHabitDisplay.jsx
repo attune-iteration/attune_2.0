@@ -7,12 +7,44 @@ import VibePopUpContainer from '../containers/VibePopUpContainer.jsx';
 const SelectHabitDisplay = ({
   handleSelectOptionChange,
   habits,
-  makeRequest,
 }) => {
   const [dropdownOption, setDropdownOption] = useState('Select a Habit');
   const [visibility, setVisibility] = useState(false);
   const [recommendations, setRecommendations] = useState(null);
   const [selectedHabit, setSelectedHabit] = useState(null);
+
+
+  const makeRequest = async (url, method) => {
+    console.log('Sending data to server...');
+    // const preferenceData = {
+    //   habit_name: habitNameInputValue,
+    //   seed_genres: checkedGenres,
+    //   target_energy: energyValue / 100,
+    //   target_danceability: danceabilityValue / 100,
+    //   target_valence: valenceValue / 100,
+    // };
+    // console.log(preferenceData);
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+      });
+      if (!response.ok) {
+        console.error(
+          'An error occurred while fetching data: ',
+          response.statusText
+        );
+      }
+      const result = await response.json();
+      console.log(
+        `Preference data has been sent to the server via a ${method} request and received the following response: `,
+        result
+      );
+      return result;
+    } catch (error) {
+      console.error('Failed to send POST request to server.', error);
+    }
+  };
 
   // on mount, fetch the habits
   useEffect(() => {
@@ -51,38 +83,37 @@ const SelectHabitDisplay = ({
   };
 
   return (
-		<div>
-			<select
-				className='bg-teal-500 border-2 border-teal-500 hover:bg-teal-700 hover:border-2 hover:border-teal-500 active:bg-teal-800 text-gray-100 font-bold py-2 px-4 rounded m-4'
-				value={dropdownOption}
-				placeholder='Choose an existing habit'
-				onChange={handleChange}
-				onClick={handleSelectOptionChange}
-			>
-				<option
-					value=''
-					selected
-				>
-					Select A Habit
-				</option>
-				{habits &&
-					habits.map((habit, index) => (
-						<option
-							key={index}
-							value={habit.habit_name}
-						>
-							{habit.habit_name}
-						</option>
-					))}
-			</select>
-			<button
-				className='bg-teal-400 border-2 border-teal-400 hover:bg-teal-600 hover:border-2 hover:border-teal-400 active:bg-teal-800 text-gray-100 font-bold py-3 px-6 rounded m-4'
-				onClick={openPopUp}
-			>
-				GO
-			</button>
-			{visibility && <VibePopUpContainer closePopUp={closePopUp} />}
-		</div>
+    <div>
+      <select
+        className='place-items-start bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-4 rounded mr-6'
+        value={dropdownOption}
+        placeholder='Choose an existing habit'
+        onChange={handleChange}
+        onClick={handleSelectOptionChange}
+      >
+        <option value='' selected>
+          Select A Habit
+        </option>
+        {habits &&
+          habits.map((habit, index) => (
+            <option key={index} value={habit.habit_name}>
+              {habit.habit_name}
+            </option>
+          ))}
+      </select>
+      <button
+        onClick={handleGoClick}
+        className='rounded border-2 border-blue-500 px-4 py-1 text-gray-200'
+      >
+        GO
+      </button>
+      {visibility && (
+        <VibePopUpContainer
+          closePopUp={closePopUp}
+          recommendations={recommendations}
+        />
+      )}
+    </div>
   );
 };
 

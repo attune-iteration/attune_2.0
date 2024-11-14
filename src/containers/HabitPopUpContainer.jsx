@@ -138,135 +138,138 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
 		{ id: 126, label: 'world-music', text: 'World Music' },
 	];
 
-  // Targets Placeholder
-  const targets = [
-    { id: 1, label: 'Energy' },
-    { id: 2, label: 'Danceability' },
-    { id: 3, label: 'Valence' },
-  ];
+	// Targets Placeholder
+	const targets = [
+		{ id: 1, label: 'Energy' },
+		{ id: 2, label: 'Danceability' },
+		{ id: 3, label: 'Valence' },
+	];
 
-  const [innerVisibility, setInnerVisibility] = useState(false);
-  const [habitNameInputValue, setHabitNameInputValue] = useState('');
-  const [checkedGenres, setCheckedGenres] = useState([]);
-  const [energyValue, setEnergyValue] = useState(0);
-  const [danceabilityValue, setDanceabilityValue] = useState(0);
-  const [valenceValue, setValenceValue] = useState(0);
-  const [recommendations, setRecommendations] = useState({});
+	const [innerVisibility, setInnerVisibility] = useState(false);
+	const [habitNameInputValue, setHabitNameInputValue] = useState('');
+	const [checkedGenres, setCheckedGenres] = useState([]);
+	const [energyValue, setEnergyValue] = useState(0);
+	const [danceabilityValue, setDanceabilityValue] = useState(0);
+	const [valenceValue, setValenceValue] = useState(0);
+	const [recommendations, setRecommendations] = useState({});
+	const [aiModalVisible, setAiModalVisible] = useState(false);
+	const [aiPrompt, setAiPrompt] = useState('');
 
-  const [aiModalVisible, setAiModalVisible] = useState(false);
-  const [aiPrompt, setAiPrompt] = useState('');
+	const navigate = useNavigate();
 
-  const navigate = useNavigate();
+	const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
+	const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&limit=1`;
+	const askAiUrl = 'http://localhost:5001/api/ask_ai';
+	const openInnerPopUp = () => setInnerVisibility(true);
+	const closeInnerPopUp = () => setInnerVisibility(false);
 
-  const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
-  const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&limit=1`;
-  const askAiUrl = 'http://localhost:5001/api/ask_ai';
-  
-  const openInnerPopUp = () => setInnerVisibility(true);
-  const closeInnerPopUp = () => setInnerVisibility(false);
+	const openAiModal = () => setAiModalVisible(true);
+	const closeAiModal = () => setAiModalVisible(false);
+	const makeRequest = async (url, method) => {
+		console.log('Sending data to server...');
+		// const preferenceData = {
+		//   habit_name: habitNameInputValue,
+		//   seed_genres: checkedGenres,
+		//   target_energy: energyValue / 100,
+		//   target_danceability: danceabilityValue / 100,
+		//   target_valence: valenceValue / 100,
+		// };
+		// console.log(preferenceData);
+	
+		try {
+		  const response = await fetch(url, {
+			method: method,
+		  });
+		  if (!response.ok) {
+			console.error(
+			  'An error occurred while fetching data: ',
+			  response.statusText
+			);
+		  }
+		  const result = await response.json();
+		  console.log(
+			`Preference data has been sent to the server via a ${method} request and received the following response: `,
+			result
+		  );
+		  return result;
+		} catch (error) {
+		  console.error('Failed to send POST request to server.', error);
+		}
+	  };
+	const handleAiPromptChange = (event) => {
+		setAiPrompt(event.target.value);
+	  };
 
-  const openAiModal = () => setAiModalVisible(true);
-  const closeAiModal = () => setAiModalVisible(false);
+	
+	  const handleAiSubmit = async (event) => {
+		event.preventDefault();
+		const response = await makeRequest(
+			askAiUrl,
+		  'POST',
+		  { prompt: aiPrompt }
+		);
+		closeAiModal();
+		if (response) {
+		  setEnergyValue(response.target_energy * 100);
+		  setDanceabilityValue(response.target_danceability * 100);
+		  setValenceValue(response.target_valence * 100);
+		  setCheckedGenres(response.seed_genres.split(','));
+		}
+	  };
 
-  const handleAiPromptChange = (event) => {
-    setAiPrompt(event.target.value);
-  };
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		await makeRequest(createHabitsUrl, 'POST');
+		// const response = await makeRequest(fetchRecommendationsUrl, 'GET');
+    // console.log('Response', response);
+		// closeInnerPopUp();
+		// if (response && response.recommendations) {
+		// 	setRecommendations(response.recommendations[0]);
+		// 	const recommendationsString = JSON.stringify(
+		// 		response.recommendations[0]
+		// 	);
+		// 	navigate(
+		// 		`/vibe?recommendations=${encodeURIComponent(recommendationsString)}`
+		// 	);
+		// }
+	};
 
-  const makeRequest = async (url, method, body = null) => {
-    console.log('Sending data to server...');
-    try {
-      const options = {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      if (body) {
-        options.body = JSON.stringify(body);
-      }
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        console.error(
-          'An error occurred while fetching data: ',
-          response.statusText
-        );
-        return null;
-      }
-      const result = await response.json();
-      console.log(`Received response from server: `, result);
-      return result;
-    } catch (error) {
-      console.error('Failed to send request to server.', error);
-      return null;
-    }
-  };
+	const handleInputChange = (event) => {
+		console.log(event.target.value);
+		setHabitNameInputValue(event.target.value);
+	};
 
-  const handleAiSubmit = async (event) => {
-    event.preventDefault();
-    const response = await makeRequest(
-		askAiUrl,
-      'POST',
-      { prompt: aiPrompt }
-    );
-    closeAiModal();
-    if (response) {
-      setEnergyValue(response.target_energy * 100);
-      setDanceabilityValue(response.target_danceability * 100);
-      setValenceValue(response.target_valence * 100);
-      setCheckedGenres(response.seed_genres.split(','));
-    }
-  };
+	const handleCheckBoxChange = (genreLabel) => {
+		setCheckedGenres((prevCheckedGenres) => {
+			if (prevCheckedGenres.includes(genreLabel)) {
+				return prevCheckedGenres.filter((id) => id !== genreLabel);
+			} else {
+				return [...prevCheckedGenres, genreLabel];
+			}
+		});
+	};
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    await makeRequest(createHabitsUrl, 'POST');
-    const response = await makeRequest(fetchRecommendationsUrl, 'GET');
-    closeInnerPopUp();
-    if (response && response.recommendations) {
-      setRecommendations(response.recommendations[0]);
-      const recommendationsString = JSON.stringify(response.recommendations[0]);
-      navigate(
-        `/vibe?recommendations=${encodeURIComponent(recommendationsString)}`
-      );
-    }
-  };
+	const handleSliderChange = (targetId, event) => {
+		if (targetId === targets[0].id) {
+			handleEnergySliderChange(event);
+		} else if (targetId === targets[1].id) {
+			handleDanceabilitySliderChange(event);
+		} else {
+			handleValenceSliderChange(event);
+		}
+	};
 
-  const handleInputChange = (event) => {
-    console.log(event.target.value);
-    setHabitNameInputValue(event.target.value);
-  };
+	const handleEnergySliderChange = (event) => {
+		setEnergyValue(event.target.value);
+	};
 
-  const handleCheckBoxChange = (genreLabel) => {
-    setCheckedGenres((prevCheckedGenres) => {
-      if (prevCheckedGenres.includes(genreLabel)) {
-        return prevCheckedGenres.filter((id) => id !== genreLabel);
-      } else {
-        return [...prevCheckedGenres, genreLabel];
-      }
-    });
-  };
+	const handleDanceabilitySliderChange = (event) => {
+		setDanceabilityValue(event.target.value);
+	};
 
-  const handleSliderChange = (targetId, event) => {
-    if (targetId === targets[0].id) {
-      handleEnergySliderChange(event);
-    } else if (targetId === targets[1].id) {
-      handleDanceabilitySliderChange(event);
-    } else {
-      handleValenceSliderChange(event);
-    }
-  };
-
-  const handleEnergySliderChange = (event) => {
-    setEnergyValue(event.target.value);
-  };
-
-  const handleDanceabilitySliderChange = (event) => {
-    setDanceabilityValue(event.target.value);
-  };
-
-  const handleValenceSliderChange = (event) => {
-    setValenceValue(event.target.value);
-  };
+	const handleValenceSliderChange = (event) => {
+		setValenceValue(event.target.value);
+	};
 
   return (
 		<div
