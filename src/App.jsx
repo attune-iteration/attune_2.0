@@ -6,14 +6,20 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
-    <Router>
-      <div>
-        <Routes>
-          <Route path='/' element={<MainContainer/>}/>
-          <Route path='/vibe' element={<VibePopUpContainer/>}/>
-        </Routes>
-      </div>
-    </Router>
+		<Router>
+			<div className='bg-gradient-to-r from-slate-950 to-blue-950'>
+				<Routes>
+					<Route
+						path='/'
+						element={<MainContainer />}
+					/>
+					<Route
+						path='/vibe'
+						element={<VibePopUpContainer />}
+					/>
+				</Routes>
+			</div>
+		</Router>
   );
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import express, { json } from 'express';
 import cors from 'cors';
 import aTuneRoutes from './routes/aTuneRoutes.js';
@@ -19,7 +20,7 @@ app.use('/api', aTuneRoutes); // /api/dayview will be routed to the associated h
 
 // dont remove the _next parameter
 //
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,
