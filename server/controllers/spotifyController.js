@@ -52,7 +52,7 @@ const fetchSong = async (req, res, next) => {
       seed_genres: genres, // Pass the array of genres
       target_valence: parseFloat(target_valence), // Parse valence to a number
       target_danceability: parseFloat(target_danceability), // Parse danceability to a number
-      limit: limit, // Limit the number of recommendations!
+      limit: 1, // Limit the number of recommendations!
     });
 
     console.log(response);

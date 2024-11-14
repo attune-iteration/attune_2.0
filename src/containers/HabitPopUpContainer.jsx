@@ -37,7 +37,8 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
 
   const createHabitsUrl = `http://localhost:5001/api/habits?name=default_user&seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&habit_name=${habitNameInputValue}`;
   const fetchRecommendationsUrl = `http://localhost:5001/api/spotify_recommendations?seed_genres=${checkedGenres}&target_valence=${valenceValue / 100}&target_energy=${energyValue / 100}&target_danceability=${danceabilityValue / 100}&limit=1`;
-
+  const askAiUrl = 'http://localhost:5001/api/ask_ai';
+  
   const openInnerPopUp = () => setInnerVisibility(true);
   const closeInnerPopUp = () => setInnerVisibility(false);
 
@@ -80,7 +81,7 @@ const HabitPopUpContainer = ({ visibility, openPopUp, closePopUp }) => {
   const handleAiSubmit = async (event) => {
     event.preventDefault();
     const response = await makeRequest(
-      'http://localhost:5001/api/ask_ai',
+		askAiUrl,
       'POST',
       { prompt: aiPrompt }
     );
