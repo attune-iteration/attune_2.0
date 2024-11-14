@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
 import express, { json } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import aTuneRoutes from './routes/aTuneRoutes.js';
 import initializeTables from './controllers/initializeDatabase.js';
 const app = express();
 app.use(cors());
 app.use(json());
+app.use(cookieParser());
 
 // create the tables in database (if those tables do not exist)
 initializeTables()

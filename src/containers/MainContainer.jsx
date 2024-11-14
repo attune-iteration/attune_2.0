@@ -47,6 +47,7 @@ const MainContainer = () => {
     }
   };
 
+
   return (
 		<div className='flex items-center justify-center align-middle h-screen flex-col font-sans text-teal-400'>
 			<WelcomeDisplay />
@@ -63,6 +64,7 @@ const MainContainer = () => {
 			<SelectHabitDisplay
 				handleSelectOptionChange={handleSelectOptionChange}
 				habits={habits}
+        makeRequest={makeRequest}
 			/>
 		</div>
   );
