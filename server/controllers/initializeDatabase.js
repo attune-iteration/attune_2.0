@@ -9,7 +9,7 @@
 
 import pool from '../models/aTuneModels.js';
 
-const checkTableExists = async (tableName) => {
+export const checkTableExists = async (tableName) => {
   const query = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables

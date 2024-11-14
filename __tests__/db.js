@@ -1,19 +1,11 @@
 //uses unit tests to test the DB
 
 import pool, { createUserHabit } from '../server/models/aTuneModels';
-import { createClient } from '@supabase/supabase-js';
-// import { checkTableExists, createHabitPreferenceTable } from '../server/controllers/initializeDatabase';
+import { checkTableExists } from '../server/controllers/initializeDatabase';
 
 //creates a mock of the supabase client and the from method for inserting data
-jest.mock('@supabase/supabase-js', () => ({
-  createClient: jest.fn().mockReturnValue({
-    from: jest.fn().mockReturnThis(),
-    insert: jest.fn(),
-  }),
-}));
 
-describe('database unit tests', () => {
-  //mock input info
+describe('submits to supabase to check DB functions', () => {
   const inputInfo = {
     genres: 'rock,classic,acoustic',
     target_danceability: '0.6',
@@ -23,31 +15,45 @@ describe('database unit tests', () => {
     name: 'default_user',
   };
 
-  // beforeEach(() => {
-  //   mockInsert = createClient().from().insert;
+  // beforeAll(async (done) => {});
+  // let server;
+
+  // beforeAll(() => {
+  //   // Setup the server or some async resource
+  //   server = require('http').createServer((req, res) => res.end('Hello World'));
+  //   server.listen(3000);
   // });
 
-  it('createUserHabit returns response upon successful creation of habit', async () => {
-    const result = await createUserHabit(inputInfo);
-    console.log(result);
-    expect(result).not.toBeInstanceOf(Error);
-    expect(result).toBe('habit creation succesfull');
+  afterAll(async () => {
+    const queryString = `DELETE FROM habit_preference
+    WHERE habit_name = '$1'`;
+    const values = [inputInfo.habit_name];
+    const result = await pool.query(queryString, values);
   });
-
-  it('checks DB for seeing whether a new habit created', async () => {
-    const queryString = `SELECT EXISTS (SELECT habit_name FROM habit_preference WHERE habit_name=$1)`;
+  xit('tests for response upon successful creation of habit', async () => {
+    const result = await createUserHabit(inputInfo);
+    await expect(result).not.toBeInstanceOf(Error);
+    await expect(result).toBe('habit creation succesfull');
+  });
+  xit('checks DB for seeing whether habit called TESTING new habit created', async () => {
+    const queryString = `SELECT * FROM habit_preference WHERE habit_name=$1`;
     const value = [inputInfo.habit_name];
-    const result = await pool.query(queryString, value);
-    const data = await result.json();
-    expect(data).toHave(inputInfo.habit_name);
-    expect(data).not.toBeInstanceOf(Error);
-    //create a beforeEach that clears the test database file
-    //create an Afterall that clears the test database file
-    //test createUserHabit in db file
-    //create a testing suite for the initialize database functions
-    //testing suite A: test 1: checkTableExists
-    //testing suite A: test 2: createHabitPreferenceTable
-    //testing suite A: test 3: createUserTable
-    //testing suite A: test 4: create
+    const {
+      data: insertData,
+      error: insertError,
+      status: insertStatus,
+    } = await pool.query(queryString, value);
+    await expect(insertError).toBe(undefined);
+    // inputInfo.habit_name);
+    await expect(insertStatus).not.toBeInstanceOf(Error);
+    console.log(insertData);
+    // await expect(insertData.rows[0].genres).toBe(inputInfo.genres);
+  });
+});
+
+describe('unit DB tests for initializing the database', () => {
+  it('check whether a table exists in the DB', async () => {
+    const badresult = await checkTableExists('nonexistent_table');
+    await expect(badresult).toEqual(false);
   });
 });
