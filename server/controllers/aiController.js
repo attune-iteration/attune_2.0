@@ -156,6 +156,7 @@ const spotifyGenres = [
 
 const askAIForSongParameters = async (req, res, next) => {
   try {
+    // console.log(req.body);
     const userPrompt = req.body.prompt;
 
     // added error handleing

@@ -114,7 +114,8 @@ export const createUserHabit = async (inputInfo) => {
 
     SELECT $2, $3, $4, $5, nu._id AS user_id, ng._id AS genres_of_habit_id FROM public._user nu 
      --OUTER JOIN newGenres ng;
-     INNER JOIN newGenres ng ON true WHERE nu.name=$6;
+     LEFT JOIN newGenres ng ON true WHERE nu.name=$6 
+     AND nu._id IS NOT NULL;
 
 -- SELECT * from public._user;
 -- SELECT * from public.genres_of_habit;

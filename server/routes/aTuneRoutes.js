@@ -39,13 +39,13 @@ router.get('/spotify_recommendations', getAccessToken, fetchSong, (req, res) => 
  * user_id
  */
 router.post('/habits', addNewHabit, (req, res) => {
-  return res.status(200).send('ok, your habit was created.');
+  return res.status(200).send('ok, your habit was created, unless you did not specify a name, in which case, your habit was not created.');
 });
 
 router.post('/ask_ai', askAIForSongParameters);
 
 router.get('/', (req, res) => {
-  return res.status(200).send('hi, this is the api endpoint for aTune');
+  return res.status(404).send('This route is not legal');
 });
 
 export default router;

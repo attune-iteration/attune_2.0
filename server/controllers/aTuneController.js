@@ -101,7 +101,7 @@ export const addNewHabit = async (req, res, next) => {
 
   try {
     let genres = seed_genres.split(',');
-
+    console.log(name);
     const createdHabit = await createUserHabit({ name, habit_name, genres, target_energy, target_danceability, target_valence }); // give it to them as an object
     res.locals.queryResults = createdHabit;
     next();
