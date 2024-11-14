@@ -94,16 +94,29 @@ export const getDaily = async (req, _res, next) => {
  * Middleware to create a daily habit via Supabase
  */
 export const addNewHabit = async (req, res, next) => {
-  let { name, habit_name, seed_genres, target_energy, target_danceability, target_valence } = req.query;
+  let { /*name,*/ habit_name, seed_genres, target_energy, target_danceability, target_valence } = req.query;
   //console.log(req.query);
 
-  if (!name || !habit_name || !seed_genres || !target_energy || !target_danceability || !target_valence) {
+  // as of 11-14-2024 14:07 name is no longer a query param and instead is infered from ssidATTUNE coookie
+  if (/*!name ||*/ !habit_name || !seed_genres || !target_energy || !target_danceability || !target_valence) {
     return next({
       log: `user error, user did not specify all of the needed query params.`,
       status: 400,
       message: {
-        err: `you must specify all the query params: name, habit_name, seed_genres, target_energy, target_danceability, target_valence 
-        you specified ${name} & ${habit_name} & ${seed_genres} & ${target_energy} & ${target_danceability} & ${target_valence}`,
+        err: `you must specify all the query params: habit_name, seed_genres, target_energy, target_danceability, target_valence 
+        you specified ${habit_name} & ${seed_genres} & ${target_energy} & ${target_danceability} & ${target_valence}`,
+      },
+    });
+  }
+
+  // now we set name based off of res.locals.username
+  let name = res.locals.username;
+  if (!name) {
+    return next({
+      log: `dev error, somehow we got to atunecontroler.addNewHabit withought setting res.locals.username`,
+      status: 500,
+      message: {
+        err: `Internal server error, tell the devs, code: 9116`,
       },
     });
   }
