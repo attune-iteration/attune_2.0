@@ -4,7 +4,6 @@ export const createAccount = async (req, res, next) => {
   let { username, password } = req.query;
 
   if (!username || !password) {
-    console.log('WAWAWAWA');
     next({
       log: 'client forwent username/password',
       status: 400,
@@ -33,7 +32,6 @@ export const logInUser = async (req, res, next) => {
   let { username, password } = req.query;
 
   if (!username || !password) {
-    console.log('WAWAWAWA');
     next({
       log: 'client forwent username/password',
       status: 400,
@@ -51,7 +49,7 @@ export const logInUser = async (req, res, next) => {
     .then((response) => {
       console.log(response);
       if (response.rows.length !== 1) {
-        return res.status(400).json({ successful: false, message: 'Incorrect username or password, thats all we know.  . . .     . . . ok actually we do know which one(s) is/are incorrect but we just dont want to tell you. (:' });
+        return res.status(401).json({ successful: false, message: 'Incorrect username or password, thats all we know.  . . .   ...   . . . ok actually we do know which one(s) is/are incorrect but we just dont want to tell you. (:' });
       }
       res.locals.username = username;
       res.locals.password = password;

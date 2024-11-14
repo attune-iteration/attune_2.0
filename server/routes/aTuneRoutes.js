@@ -42,7 +42,7 @@ router.get('/spotify_recommendations', setLocalsFromCookieSession, getAccessToke
  */
 
 router.post('/habits', setLocalsFromCookieSession, addNewHabit, (req, res) => {
-  return res.status(200).send('ok, your habit was created, unless you did not specify a name, in which case, your habit was not created.');
+  return res.status(200).send('ok, your habit was created, (if you need to debug, ask the devs if the db has a user entry for your username?)');
 });
 
 router.post('/ask_ai', setLocalsFromCookieSession, askAIForSongParameters);
