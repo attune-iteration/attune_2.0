@@ -12,7 +12,7 @@ const HabitName = ({ handleInputChange, habitNameInputValue }) => {
 					<strong>NAME YOUR HABIT</strong>
 				</p>
 				<input
-					className='bg-zinc-900 border-2 border-zinc-800 p-2 rounded-2xl text-gray-200'
+					className='bg-zinc-900 border-2 border-zinc-800 p-2 rounded-2xl'
 					type='text'
 					onChange={handleInputChange}
 					value={habitNameInputValue}

@@ -5,15 +5,15 @@ import logo from '../assets/patrice.png';
 
 const WelcomeDisplay = () => {
   return (
-    <div className='text-center text-teal-400'>
-      <div className='flex justify-center'>
-        <img src={logo} className='w-24 opacity-25'></img>
-      </div>
-      <h1 className='font-bold text-7xl leading-loose tracking-tight hover:tracking-wide mb-20'>
-        <strong>A T T U N E</strong>
-      </h1>
-      <div></div>
-    </div>
+		<div className='flex flex-col items-center justify-center'>
+			<h1 className='font-bold text-5xl tracking-tight hover:tracking-wide'>
+				<strong>A T T U N E</strong>
+			</h1>
+				<img
+					src={logo}
+					className='w-24 opacity-25 py-11'
+			  />
+		</div>
   );
 };
 

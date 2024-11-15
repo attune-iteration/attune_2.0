@@ -19,8 +19,8 @@ const SliderDisplay = ({
   return (
     <div>
       {targets.map((target) => (
-        <div key={target.id} className='mb-6'>
-          <p className='mb-1 text-lg font-bold text-gray-200'>{target.label}</p>
+        <div key={target.id} className="mb-6">
+          <p className='mb-1 text-lg font-bold text-gray-300 text-left'>{target.label}</p>
           <div className='relative w-full'>
             <input
               type='range'

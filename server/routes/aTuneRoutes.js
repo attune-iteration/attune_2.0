@@ -23,7 +23,7 @@ const router = Router();
 //middleware: aTuneController.getHabits
 router.get('/habits/all', setLocalsFromCookieSession, getHabits, (_req, res) => {
   console.log('got right back to get');
-  return res.status(200).send(res.locals.habitlist);
+  return res.status(200).json(res.locals.habitlist);
 });
 
 /*
@@ -42,12 +42,14 @@ router.get('/spotify_recommendations', setLocalsFromCookieSession, getAccessToke
  */
 
 router.post('/habits', setLocalsFromCookieSession, addNewHabit, (req, res) => {
-  return res.status(200).send('ok, your habit was created, (if you need to debug, ask the devs if the db has a user entry for your username?)');
+  return res.status(200).json({ message: 'ok, your habit was created, (if you need to debug, ask the devs if the db has a user entry for your username?)' });
 });
 
 router.post('/ask_ai', setLocalsFromCookieSession, askAIForSongParameters);
 
 router.post('/signup', createAccount, createSessionFromLocals, (req, res, next) => {
+  //  res.cookie('ssidATTUNE', 'hi', { httpOnly: true, sameSite: 'None' });
+
   res.status(200).json({ message: 'ok, account was created', succesful: true });
 });
 router.post('/login', logInUser, createSessionFromLocals, (req, res, next) => {
@@ -55,7 +57,7 @@ router.post('/login', logInUser, createSessionFromLocals, (req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-  return res.status(404).send('This route is not legal');
+  return res.status(404).json({ message: 'This route is not legal', err: 'illegal route specified' });
 });
 
 export default router;

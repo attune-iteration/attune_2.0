@@ -11,26 +11,16 @@ const CreateHabitDisplay = ({makeRequest}) => {
   const closePopUp = () => setVisibility(false);
 
   return (
-    <div>
-      {/* {!visibility ? (
-        <button
-          onClick={openPopUp}
-          className='bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-4 rounded opacity-85'
-        >
-          Create A New Habit
-        </button>
-      ) : (
-        <HabitPopUpContainer closePopUp={closePopUp} />
-      )} */}
-      <button
-        onClick={openPopUp}
-        className='bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-4 rounded opacity-85'
-      >
-        Create A New Habit
-      </button>
-      {visibility && <HabitPopUpContainer closePopUp={closePopUp} makeRequest={makeRequest}/>}
-    </div>
+		<div className='mb-6'>
+			<button
+				onClick={openPopUp}
+				className='bg-teal-500 border-2 border-teal-500 hover:bg-teal-700 hover:border-2 hover:border-teal-500 active:bg-teal-800 text-gray-100 font-bold py-2 px-4 rounded'
+			>
+				Create New Habit
+			</button>
+			{visibility && <HabitPopUpContainer closePopUp={closePopUp} />}
+		</div>
   );
-};
+}
 
 export default CreateHabitDisplay;
