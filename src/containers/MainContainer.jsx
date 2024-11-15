@@ -58,7 +58,7 @@ const MainContainer = () => {
 			<p className='mb-12 mt-12 text-gray-400 text-xl'>
 				<strong>OR</strong>
 			</p>
-			<p className='text-gray-400 text-l'>
+			<p className='text-gray-400 text-l p-2'>
 				<strong>Select an Existing Habit</strong>
 			</p>
 			<SelectHabitDisplay

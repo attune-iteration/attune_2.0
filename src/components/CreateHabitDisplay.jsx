@@ -14,7 +14,7 @@ const CreateHabitDisplay = ({makeRequest}) => {
 		<div className='mb-6'>
 			<button
 				onClick={openPopUp}
-				className='bg-teal-500 border-2 border-teal-500 hover:bg-teal-700 hover:border-2 hover:border-teal-500 active:bg-teal-800 text-gray-100 font-bold py-2 px-4 rounded'
+				className='bg-teal-500 border-2 border-teal-500 hover:bg-teal-700 hover:border-2 hover:border-teal-500 active:bg-teal-800 text-gray-100 font-bold py-2 px-4 rounded-xl'
 			>
 				Create New Habit
 			</button>

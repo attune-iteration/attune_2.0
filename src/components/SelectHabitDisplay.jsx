@@ -83,37 +83,43 @@ const SelectHabitDisplay = ({
   };
 
   return (
-    <div>
-      <select
-        className='place-items-start bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-4 rounded mr-6'
-        value={dropdownOption}
-        placeholder='Choose an existing habit'
-        onChange={handleChange}
-        onClick={handleSelectOptionChange}
-      >
-        <option value='' selected>
-          Select A Habit
-        </option>
-        {habits &&
-          habits.map((habit, index) => (
-            <option key={index} value={habit.habit_name}>
-              {habit.habit_name}
-            </option>
-          ))}
-      </select>
-      <button
-        onClick={handleGoClick}
-        className='rounded border-2 border-blue-500 px-4 py-1 text-gray-200'
-      >
-        GO
-      </button>
-      {visibility && (
-        <VibePopUpContainer
-          closePopUp={closePopUp}
-          recommendations={recommendations}
-        />
-      )}
-    </div>
+		<div>
+			<select
+				className='bg-teal-500 border-2 border-teal-500 hover:bg-teal-700 hover:border-2 hover:border-teal-500 active:bg-teal-800 text-gray-100 font-bold py-2 px-4 mx-4 rounded-xl'
+				value={dropdownOption}
+				placeholder='Choose an existing habit'
+				onChange={handleChange}
+				onClick={handleSelectOptionChange}
+			>
+				<option
+					value=''
+					selected
+				>
+					Select A Habit
+				</option>
+				{habits &&
+					habits.map((habit, index) => (
+						<option
+							key={index}
+							value={habit.habit_name}
+						>
+							{habit.habit_name}
+						</option>
+					))}
+			</select>
+			<button
+				onClick={handleGoClick}
+				className='bg-teal-500 border-2 border-teal-500 hover:bg-teal-700 hover:border-2 hover:border-teal-500 active:bg-teal-800 text-gray-100 font-bold py-3 px-6 mx-4 rounded-xl'
+			>
+				GO
+			</button>
+			{visibility && (
+				<VibePopUpContainer
+					closePopUp={closePopUp}
+					recommendations={recommendations}
+				/>
+			)}
+		</div>
   );
 };
 
