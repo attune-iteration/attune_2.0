@@ -4,6 +4,7 @@
 import React from 'react';
 
 const VibeDisplay = ({ recommendations }) => {
+  console.log('');
   return (
     <div className='text-gray-200 text-center'>
       <h3>Here's The Vibe!</h3>
@@ -11,9 +12,9 @@ const VibeDisplay = ({ recommendations }) => {
         recommendations.map((song, index) => (
           <div key={index}>
             <img src={song.artwork} alt={`${song.name} artwork`} />
-            <p>
+            <a href={`https://open.spotify.com/track/${song.uri.split(':')[2]}`}>
               {song.name} by {song.artist}
-            </p>
+            </a>
           </div>
         ))}
     </div>
