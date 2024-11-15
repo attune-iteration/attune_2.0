@@ -23,7 +23,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // create the tables in database (if those tables do not exist)
