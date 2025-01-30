@@ -2,10 +2,23 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import dotenv from 'dotenv';
 dotenv.config();
 
+let engageBackup = process.env.ENGAGE_BACKUP_SPOTIFY;
+let clientId;
+let clientSecret;
+if (engageBackup === 'true') {
+  clientId = process.env.BACKUP_SPOTIFY_CLIENT_ID;
+  clientSecret = process.env.BACKUP_SPOTIFY_CLIENT_SECRET;
+  console.log('engaging backup spotify connection...');
+} else {
+  clientId = process.env.SPOTIFY_CLIENT_ID;
+  clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+  console.log('default spotify connection...');
+}
+
 // Initialize Spotify API with credentials
 const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.SPOTIFY_CLIENT_ID,
-  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+  clientId: clientId,
+  clientSecret: clientSecret,
   //redirectUri: 'http://localhost:3000/api/callback', // Adjust to your frontend URL
 });
 
@@ -31,50 +44,92 @@ const getAccessToken = async (req, res, next) => {
 };
 
 const fetchSong = async (req, res, next) => {
-  // Read parameters from request query
-  const { seed_genres, target_energy, target_danceability, target_valence, limit } = req.query;
+  const {
+    seed_genres,
+    target_energy,
+    target_danceability,
+    target_valence,
+    limit,
+  } = req.query;
 
-  // Validate that required parameters are provided
-  if (!seed_genres || !target_energy || !target_valence || !target_danceability || !limit) {
+  console.log('Received parameters:', {
+    seed_genres,
+    target_energy,
+    target_danceability,
+    target_valence,
+    limit,
+  });
+
+  if (
+    !seed_genres ||
+    !target_energy ||
+    !target_valence ||
+    !target_danceability ||
+    !limit
+  ) {
     return next({
-      log: 'Missing required parameters: seed_genres, target_energy, target_valence, target_danceability',
+      log: `Missing required parameters. Received: ${JSON.stringify(req.query)}`,
       status: 400,
-      message: { err: 'Missing required parameters: seed_genres, target_energy, target_valence, target_danceability' },
+      message: { err: 'Missing required parameters' },
     });
   }
 
-  // convert the seed_genres to a comma-separated string
-  const genres = typeof seed_genres === 'string' ? seed_genres.split(',') : seed_genres;
-
   try {
-    // Fetch a single song recommendation
-    const response = await spotifyApi.getRecommendations({
-      seed_genres: genres, // Pass the array of genres
-      target_valence: parseFloat(target_valence), // Parse valence to a number
-      target_danceability: parseFloat(target_danceability), // Parse danceability to a number
-      limit: limit, // Limit the number of recommendations!
-    });
+    const genres =
+      typeof seed_genres === 'string' ? seed_genres.split(',') : seed_genres;
+    console.log('Processed genres:', genres);
 
-    console.log(response);
+    try {
+      const recommendations = await spotifyApi.getRecommendations({
+        seed_genres: genres,
+        target_valence: parseFloat(target_valence),
+        target_energy: parseFloat(target_energy),
+        target_danceability: parseFloat(target_danceability),
+        limit: 1,
+      });
 
-    // Send the recommended track as JSON response
-    // we are grabbing the smallest image, but could grab a bigger one, biggest being at images[0]
-    const recommendations = response.body.tracks.map((track) => ({
-      name: track.name,
-      artist: track.artists[0].name,
-      uri: track.uri,
-      artwork: track.album.images[track.album.images.length - 1]?.url, // Gets the smallest image URL
-    }));
+      if (
+        !recommendations.body.tracks ||
+        recommendations.body.tracks.length === 0
+      ) {
+        throw new Error('No tracks found for the given parameters');
+      }
 
-    // res.json({ recommendations });
-    res.locals.recommendations = recommendations;
-    return next();
+      // Send the recommended track as JSON response
+      // we are grabbing the smallest image, but could grab a bigger one, biggest being at images[0]
+      const recommendationsList = recommendations.body.tracks.map((track) => ({
+        name: track.name,
+        artist: track.artists[0].name,
+        uri: track.uri,
+        artwork: track.album.images[track.album.images.length - 1]?.url, // Gets the smallest image URL
+      }));
+
+      res.locals.recommendations = recommendationsList;
+      return next();
+    } catch (spotifyError) {
+      if (spotifyError.statusCode === 429) {
+        const retryAfter = parseInt(spotifyError.headers['retry-after']) || 10;
+        console.log(`Rate limited. Retry after ${retryAfter} seconds`);
+        return next({
+          log: 'Rate limit exceeded',
+          status: 429,
+          message: {
+            err: 'Too many requests to Spotify API',
+            retryAfter: retryAfter,
+          },
+        });
+      }
+
+      throw spotifyError;
+    }
   } catch (err) {
-    console.error('Error fetching recommendations:', err);
     return next({
-      log: 'Error fetching recommendations',
-      status: 500,
-      message: { err: 'Failed to fetch song recommendations' },
+      log: `Error fetching recommendations: ${err.message}`,
+      status: err.statusCode || 500,
+      message: {
+        err: 'Failed to fetch song recommendations',
+        details: err.message,
+      },
     });
   }
 };

@@ -6,9 +6,9 @@ const { Pool } = pg;
 
 dotenv.config(); // ensure the environment variables are loaded
 
-const supabaseUrl = process.env.SUPABASE_URL; // eslint-disable-line no-undef
-const supabaseKey = process.env.SUPABASE_API_ANON_KEY; // eslint-disable-line no-undef
-const supabaseUri = process.env.SUPABASE_URI; // eslint-disable-line no-undef
+const supabaseUrl = process.env.SUPABASE_URL; // xeslint-disable-line no-undef
+const supabaseKey = process.env.SUPABASE_API_ANON_KEY; // xeslint-disable-line no-undef
+const supabaseUri = process.env.SUPABASE_URI; // xeslint-disable-line no-undef
 
 if (!supabaseUrl || !supabaseKey || !supabaseUri) {
   throw new Error('Supabase URL and key are required and supabase uri (in .env)');
@@ -31,24 +31,26 @@ export default pool;
 /*
  * A function to get users via querying Supabase and select a user by ID
  */
-export const getUserId = async (userName) => {
-  // fetch daily mood from Supabase
-  console.log({ userName });
-  try {
-    const users = await supabase.from('Users').select('*');
-    console.log({ users });
-    const { data, error } = await supabase // query Supabase, </user_id> Replace <user_id> with the actual user's ID
-      .from('Users') // from Users table
-      .select('id') // selecting the habits column
-      .eq('name', userName); // filtered by user_id
-    console.log({ data });
-    if (error) throw error;
-    return data; // return fetched data
-  } catch (error) {
-    console.error('Error fetching daily habits: ', error);
-    throw error;
-  }
-};
+// commented out as of 11-14-2024 13:55
+// reason: the only function that used this has now been depricated.
+// export const getUserId = async (userName) => {
+//   // fetch daily mood from Supabase
+//   console.log({ userName });
+//   try {
+//     const users = await supabase.from('Users').select('*');
+//     console.log({ users });
+//     const { data, error } = await supabase // query Supabase, </user_id> Replace <user_id> with the actual user's ID
+//       .from('Users') // from Users table
+//       .select('id') // selecting the habits column
+//       .eq('name', userName); // filtered by user_id
+//     console.log({ data });
+//     if (error) throw error;
+//     return data; // return fetched data
+//   } catch (error) {
+//     console.error('Error fetching daily habits: ', error);
+//     throw error;
+//   }
+// };
 
 /*
  * A function to get users via querying supabase and get habits by user ID
@@ -98,7 +100,7 @@ export const createUserHabit = async (inputInfo) => {
                                   VALUES ($1)    -- '["rock", "classical"]'::json
                                   RETURNING _id
     )
-
+    -- the above happens even if a user is not present because it does not error out if no user present...
 
 
     INSERT INTO public.habit_preference (
